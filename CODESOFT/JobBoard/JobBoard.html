@@ -1,0 +1,258 @@
+<!-- File Name: JobBoard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Board </title>
+  <style>
+    /* General Styles */
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin:0; padding:0; background:#f0f2f5; color:#333; }
+    header { background: #0a74da; color: white; padding: 20px; text-align: center; }
+    nav a { color:white; margin: 0 15px; text-decoration: none; font-weight:bold; cursor: pointer; }
+    nav a:hover { text-decoration: underline; }
+    main { padding: 20px; max-width: 1000px; margin: auto; }
+
+    /* Job Cards */
+    .job-card { background:white; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1); padding:15px; margin-bottom:15px; display:flex; align-items:center; transition:transform 0.2s; }
+    .job-card:hover { transform:translateY(-5px); }
+    .job-logo { width:60px; height:60px; border-radius:10px; margin-right:15px; object-fit:cover; }
+    .job-info { flex:1; }
+    .job-info h4 { margin:0; color:#0a74da; }
+    .job-info p { margin:5px 0; }
+    .badge { display:inline-block; background:#e1f0ff; color:#0a74da; padding:3px 8px; border-radius:5px; font-size:12px; margin-left:5px; }
+
+    /* Forms */
+    input, textarea, button { padding:10px; margin:5px 0; width: 100%; max-width:400px; border-radius:5px; border:1px solid #ccc; }
+    textarea { resize: vertical; }
+    button { background:#0a74da; color:white; border:none; cursor:pointer; font-weight:bold; transition: background 0.2s; }
+    button:hover { background:#0959a7; }
+
+    /* Sections */
+    h2 { color:#0a74da; }
+    h3 { margin-top:20px; }
+
+    /* Hidden Pages */
+    .hidden { display:none; }
+
+    /* Responsive */
+    @media(max-width:600px){
+      header, nav a { display:block; margin:5px 0; }
+      .job-card { flex-direction:column; align-items:flex-start; }
+      .job-logo { margin-bottom:10px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Job Board </h1>
+  <nav>
+    <a onclick="showPage('home')">Home</a>
+    <a onclick="showPage('jobs')">Jobs</a>
+    <a onclick="showPage('employer')">Employer</a>
+    <a onclick="showPage('candidate')">Candidate</a>
+  </nav>
+</header>
+
+<main>
+  <!-- Home Page -->
+  <div id="home-page">
+    <h2>Welcome to Job Board</h2>
+    <h3>Featured Jobs</h3>
+    <div id="featured-jobs"></div>
+  </div>
+
+  <!-- Jobs Page -->
+  <div id="jobs-page" class="hidden">
+    <h2>Job Listings</h2>
+    <input type="text" id="search" placeholder="Search jobs...">
+    <div id="jobs-container"></div>
+  </div>
+
+  <!-- Job Detail Page -->
+  <div id="job-detail-page" class="hidden">
+    <h2>Job Detail</h2>
+    <div id="job-detail"></div>
+    <form id="apply-form">
+      <h3>Apply for this job</h3>
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Your Email" required>
+      <input type="file" required>
+      <button type="submit">Submit Application</button>
+    </form>
+  </div>
+
+  <!-- Employer Dashboard -->
+  <div id="employer-page" class="hidden">
+    <h2>Employer Dashboard</h2>
+    <h3>Post a Job</h3>
+    <form id="post-job-form">
+      <input type="text" placeholder="Job Title" required>
+      <input type="text" placeholder="Company Name" required>
+      <input type="text" placeholder="Location" required>
+      <input type="text" placeholder="Logo URL (optional)">
+      <input type="text" placeholder="Job Type (Full-time / Part-time / Remote)">
+      <textarea placeholder="Job Description" required></textarea>
+      <button type="submit">Post Job</button>
+    </form>
+    <h3>Your Posted Jobs</h3>
+    <div id="employer-jobs"></div>
+  </div>
+
+  <!-- Candidate Dashboard -->
+  <div id="candidate-page" class="hidden">
+    <h2>Candidate Dashboard</h2>
+    <h3>Your Profile</h3>
+    <form id="profile-form">
+      <input type="text" placeholder="Name" required>
+      <input type="email" placeholder="Email" required>
+      <button type="submit">Update Profile</button>
+    </form>
+    <h3>Applied Jobs</h3>
+    <div id="applied-jobs"></div>
+  </div>
+</main>
+
+<script>
+  // Sample jobs data with logos and job types
+  let jobs = [
+    { id:1, title:"Frontend Developer", company:"Tech Corp", location:"Remote", description:"Work with HTML, CSS, JS to build amazing websites.", logo:"https://via.placeholder.com/60/0a74da/ffffff?text=T", type:"Full-time" },
+    { id:2, title:"Backend Developer", company:"Innovate Ltd", location:"NY", description:"Node.js, Express, Database work and APIs.", logo:"https://via.placeholder.com/60/0a74da/ffffff?text=I", type:"Part-time" },
+    { id:3, title:"Fullstack Developer", company:"Startup Inc", location:"London", description:"React + Node.js fullstack development.", logo:"https://via.placeholder.com/60/0a74da/ffffff?text=S", type:"Remote" }
+  ];
+
+  let employerJobs = [];
+  let appliedJobs = [];
+  let currentJobId = null;
+
+  // Page Navigation
+  function showPage(page) {
+    const pages = ['home','jobs','job-detail','employer','candidate'];
+    pages.forEach(p => document.getElementById(p+'-page').classList.add('hidden'));
+    document.getElementById(page+'-page').classList.remove('hidden');
+    if(page==='candidate') displayAppliedJobs();
+  }
+
+  // Function to create job card HTML
+  function createJobCard(job){
+    return `<img src="${job.logo || 'https://via.placeholder.com/60/0a74da/ffffff?text=?'}" class="job-logo">
+            <div class="job-info">
+              <h4>${job.title} <span class="badge">${job.type || 'Full-time'}</span></h4>
+              <p>${job.company} - ${job.location}</p>
+              <button onclick="viewJob(${job.id})">View Details</button>
+            </div>`;
+  }
+
+  // Featured Jobs
+  const featuredDiv = document.getElementById('featured-jobs');
+  function displayFeaturedJobs(){
+    featuredDiv.innerHTML = '';
+    jobs.forEach(job=>{
+      const div = document.createElement('div');
+      div.className = 'job-card';
+      div.innerHTML = createJobCard(job);
+      featuredDiv.appendChild(div);
+    });
+  }
+  displayFeaturedJobs();
+
+  // Jobs Page
+  const jobsContainer = document.getElementById('jobs-container');
+  const searchInput = document.getElementById('search');
+  function displayJobsList(filteredJobs){
+    jobsContainer.innerHTML = '';
+    filteredJobs.forEach(job=>{
+      const div = document.createElement('div');
+      div.className = 'job-card';
+      div.innerHTML = createJobCard(job);
+      jobsContainer.appendChild(div);
+    });
+  }
+  if(jobsContainer){
+    displayJobsList(jobs);
+    searchInput.addEventListener('input', ()=>{
+      const filtered = jobs.filter(j=> j.title.toLowerCase().includes(searchInput.value.toLowerCase()));
+      displayJobsList(filtered);
+    });
+  }
+
+  // View Job Details
+  function viewJob(id){
+    currentJobId = id;
+    const job = jobs.find(j=> j.id==id);
+    const detailDiv = document.getElementById('job-detail');
+    detailDiv.innerHTML = `<div class="job-card">${createJobCard(job)}</div><p>${job.description}</p>`;
+    showPage('job-detail');
+  }
+
+  // Apply Form
+  const applyForm = document.getElementById('apply-form');
+  if(applyForm){
+    applyForm.addEventListener('submit', e=>{
+      e.preventDefault();
+      const job = jobs.find(j=> j.id==currentJobId);
+      appliedJobs.push(job);
+      alert("Application submitted successfully!");
+      applyForm.reset();
+    });
+  }
+
+  // Employer Dashboard
+  const postForm = document.getElementById('post-job-form');
+  const employerDiv = document.getElementById('employer-jobs');
+  if(postForm){
+    postForm.addEventListener('submit', e=>{
+      e.preventDefault();
+      const f = postForm.elements;
+      const newJob = {
+        id: jobs.length + 1,
+        title: f[0].value,
+        company: f[1].value,
+        location: f[2].value,
+        logo: f[3].value,
+        type: f[4].value,
+        description: f[5].value
+      };
+      jobs.push(newJob);
+      employerJobs.push(newJob);
+      alert("Job posted successfully!");
+      postForm.reset();
+      displayEmployerJobs();
+      displayFeaturedJobs();
+    });
+  }
+  function displayEmployerJobs(){
+    employerDiv.innerHTML = '';
+    employerJobs.forEach(job=>{
+      const div = document.createElement('div');
+      div.className = 'job-card';
+      div.innerHTML = createJobCard(job);
+      employerDiv.appendChild(div);
+    });
+  }
+
+  // Candidate Dashboard
+  const appliedDiv = document.getElementById('applied-jobs');
+  function displayAppliedJobs(){
+    appliedDiv.innerHTML = '';
+    appliedJobs.forEach(job=>{
+      const div = document.createElement('div');
+      div.className = 'job-card';
+      div.innerHTML = createJobCard(job);
+      appliedDiv.appendChild(div);
+    });
+  }
+
+  // Profile Form
+  const profileForm = document.getElementById('profile-form');
+  if(profileForm){
+    profileForm.addEventListener('submit', e=>{
+      e.preventDefault();
+      alert("Profile updated successfully!");
+    });
+  }
+</script>
+
+</body>
+</html>

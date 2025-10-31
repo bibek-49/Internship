@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bibek Bhola | Portfolio</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      color: white;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    /* Fade-in body animation */
+    body {
+      animation: fadeInBody 1.5s ease-in-out;
+    }
+
+    @keyframes fadeInBody {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Navbar */
+    nav {
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      animation: slideDown 1.5s ease;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-80px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Hero section */
+    .hero {
+      text-align: center;
+      padding: 100px 20px;
+    }
+
+    .hero img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      margin-bottom: 20px;
+      animation: zoomIn 2s ease-in-out;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      animation: fadeText 2.5s ease;
+    }
+
+    @keyframes fadeText {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards section */
+    .skills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 50px 0;
+    }
+
+    .skill-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 15px;
+      width: 250px;
+      text-align: center;
+      transition: all 0.4s ease;
+      animation: slideUp 1.2s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .skill-card:hover {
+      transform: scale(1.05);
+      background: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      animation: fadeInBody 2s ease-in-out;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2rem; }
+      .skill-card { width: 90%; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+      <a class="navbar-brand" href="#">Bibek Bhola</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <img src="retouch_2025010713300647.jpg" alt="Bibek Bhola">
+    <h1>Hi, I'm Bibek — a Web Developer 💻</h1>
+    <p class="lead">I build responsive and animated web experiences using HTML, CSS, and JavaScript.</p>
+  </section>
+
+  <!-- Skills Section -->
+  <section class="skills container">
+    <div class="skill-card">
+      <h4>🌐 HTML & CSS</h4>
+      <p>Strong foundation in responsive web design using clean HTML5 and modern CSS3.</p>
+    </div>
+    <div class="skill-card">
+      <h4>⚙️ Java</h4>
+      <p>Proficient in Java programming for backend logic and problem solving.</p>
+    </div>
+    <div class="skill-card">
+      <h4>🚀 Bootstrap</h4>
+      <p>Experienced in using Bootstrap for fast, mobile-first web development.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 Bibek Bhola | Portfolio Website</p>
+  </footer>
+</body>
+</html>

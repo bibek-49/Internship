@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Online Quiz Maker</title>
+<style>
+/* === Base Styles === */
+body {
+  font-family: "Poppins", sans-serif;
+  background: #e9f0ff;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+.container {
+  max-width: 650px;
+  width: 100%;
+  background: #fff;
+  margin: 20px;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  animation: fadeIn 0.8s ease;
+}
+h1, h2 {
+  text-align: center;
+  color: #1a237e;
+}
+p {
+  text-align: center;
+  color: #333;
+}
+button {
+  background: linear-gradient(45deg, #007bff, #00c3ff);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  transition: 0.3s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+button:hover {
+  transform: scale(1.05);
+  background: linear-gradient(45deg, #0056b3, #0099cc);
+}
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0 10px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: border-color 0.3s;
+}
+input:focus, select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+.quiz-question {
+  margin-bottom: 20px;
+  animation: fadeIn 0.6s ease;
+}
+.option {
+  margin: 5px 0;
+}
+.hidden { display: none; }
+
+/* === Navbar === */
+nav {
+  display: flex;
+  justify-content: space-around;
+  background: linear-gradient(45deg, #007bff, #00c3ff);
+  color: white;
+  padding: 10px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+nav button {
+  background: white;
+  color: #007bff;
+  font-weight: bold;
+}
+nav button:hover {
+  background: #e3f2fd;
+  color: #0056b3;
+}
+
+/* === Home Banner === */
+#homeBanner {
+  background: url('https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;
+  border-radius: 16px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 26px;
+  font-weight: bold;
+  box-shadow: inset 0 0 100px rgba(0,0,0,0.4);
+  margin-bottom: 20px;
+}
+
+/* === Animations === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === Mobile === */
+@media (max-width: 600px) {
+  .container { padding: 15px; }
+  button, input { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Navigation -->
+  <nav>
+    <button onclick="showPage('homePage')">Home</button>
+    <button onclick="showPage('loginPage')">Login</button>
+    <button onclick="showPage('createQuizPage')">Create Quiz</button>
+    <button onclick="showPage('quizListPage')">Take Quiz</button>
+  </nav>
+
+  <!-- Home Page -->
+  <div id="homePage">
+    <div id="homeBanner">Welcome to Quiz Maker</div>
+    <p>Create your own quizzes or take others’ quizzes instantly!</p>
+  </div>
+
+  <!-- Login Page -->
+  <div id="loginPage" class="hidden">
+    <h2>User Login / Register</h2>
+    <input type="text" id="username" placeholder="Enter username">
+    <input type="password" id="password" placeholder="Enter password">
+    <button onclick="login()">Login / Register</button>
+    <p id="loginMsg"></p>
+  </div>
+
+  <!-- Create Quiz Page -->
+  <div id="createQuizPage" class="hidden">
+    <h2>Create a New Quiz</h2>
+    <input type="text" id="quizTitle" placeholder="Quiz Title">
+    <div id="questionsContainer"></div>
+    <button onclick="addQuestion()">Add Question</button>
+    <button onclick="saveQuiz()">Save Quiz</button>
+    <p id="saveMsg"></p>
+  </div>
+
+  <!-- Quiz List Page -->
+  <div id="quizListPage" class="hidden">
+    <h2>Available Quizzes</h2>
+    <div id="quizList"></div>
+  </div>
+
+  <!-- Take Quiz Page -->
+  <div id="takeQuizPage" class="hidden">
+    <h2 id="currentQuizTitle"></h2>
+    <div id="quizContent"></div>
+    <button id="nextBtn" onclick="nextQuestion()">Next</button>
+  </div>
+
+  <!-- Results Page -->
+  <div id="resultPage" class="hidden">
+    <h2>Your Result</h2>
+    <p id="scoreText"></p>
+    <div id="answerReview"></div>
+  </div>
+
+</div>
+
+<script>
+let currentUser = null;
+let quizzes = JSON.parse(localStorage.getItem('quizzes')) || [];
+let currentQuiz = null;
+let currentQuestionIndex = 0;
+let score = 0;
+
+function showPage(pageId) {
+  document.querySelectorAll('.container > div').forEach(div => div.classList.add('hidden'));
+  document.getElementById(pageId).classList.remove('hidden');
+  if(pageId === 'quizListPage') loadQuizList();
+}
+
+function login() {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  if(username && password) {
+    localStorage.setItem('user_' + username, password);
+    currentUser = username;
+    document.getElementById('loginMsg').textContent = `✅ Logged in as ${username}`;
+  } else {
+    document.getElementById('loginMsg').textContent = "⚠️ Enter valid details";
+  }
+}
+
+function addQuestion() {
+  const container = document.getElementById('questionsContainer');
+  const div = document.createElement('div');
+  div.classList.add('quiz-question');
+  div.innerHTML = `
+    <input type="text" placeholder="Question" class="questionText">
+    <input type="text" placeholder="Option A" class="optionA">
+    <input type="text" placeholder="Option B" class="optionB">
+    <input type="text" placeholder="Option C" class="optionC">
+    <input type="text" placeholder="Option D" class="optionD">
+    <select class="correctAnswer">
+      <option value="A">Correct Answer: A</option>
+      <option value="B">Correct Answer: B</option>
+      <option value="C">Correct Answer: C</option>
+      <option value="D">Correct Answer: D</option>
+    </select>
+    <hr>
+  `;
+  container.appendChild(div);
+}
+
+function saveQuiz() {
+  const title = document.getElementById('quizTitle').value.trim();
+  if(!title) return alert('Enter quiz title!');
+  const questions = [];
+  document.querySelectorAll('.quiz-question').forEach(q => {
+    const questionText = q.querySelector('.questionText').value;
+    const options = {
+      A: q.querySelector('.optionA').value,
+      B: q.querySelector('.optionB').value,
+      C: q.querySelector('.optionC').value,
+      D: q.querySelector('.optionD').value,
+    };
+    const correct = q.querySelector('.correctAnswer').value;
+    if(questionText && options.A && options.B && options.C && options.D)
+      questions.push({ questionText, options, correct });
+  });
+  if(questions.length === 0) return alert('Add at least one valid question!');
+  quizzes.push({ title, questions, creator: currentUser || 'Guest' });
+  localStorage.setItem('quizzes', JSON.stringify(quizzes));
+  document.getElementById('saveMsg').textContent = "✅ Quiz saved successfully!";
+  document.getElementById('questionsContainer').innerHTML = "";
+  document.getElementById('quizTitle').value = "";
+}
+
+function loadQuizList() {
+  const listDiv = document.getElementById('quizList');
+  listDiv.innerHTML = "";
+  quizzes.forEach((quiz, index) => {
+    const btn = document.createElement('button');
+    btn.textContent = quiz.title + " (by " + quiz.creator + ")";
+    btn.onclick = () => startQuiz(index);
+    listDiv.appendChild(btn);
+  });
+}
+
+function startQuiz(index) {
+  currentQuiz = quizzes[index];
+  currentQuestionIndex = 0;
+  score = 0;
+  showPage('takeQuizPage');
+  document.getElementById('currentQuizTitle').textContent = currentQuiz.title;
+  showQuestion();
+}
+
+function showQuestion() {
+  const q = currentQuiz.questions[currentQuestionIndex];
+  const quizDiv = document.getElementById('quizContent');
+  quizDiv.innerHTML = `
+    <p><strong>Q${currentQuestionIndex + 1}:</strong> ${q.questionText}</p>
+    ${Object.keys(q.options).map(opt => `
+      <div class="option">
+        <label><input type="radio" name="answer" value="${opt}"> ${opt}. ${q.options[opt]}</label>
+      </div>`).join('')}
+  `;
+  document.getElementById('nextBtn').textContent = currentQuestionIndex === currentQuiz.questions.length - 1 ? "Submit" : "Next";
+}
+
+function nextQuestion() {
+  const selected = document.querySelector('input[name="answer"]:checked');
+  if(!selected) return alert('Select an answer!');
+  const q = currentQuiz.questions[currentQuestionIndex];
+  if(selected.value === q.correct) score++;
+  currentQuestionIndex++;
+  if(currentQuestionIndex < currentQuiz.questions.length) {
+    showQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  showPage('resultPage');
+  document.getElementById('scoreText').textContent = `🎯 You scored ${score} / ${currentQuiz.questions.length}`;
+  const reviewDiv = document.getElementById('answerReview');
+  reviewDiv.innerHTML = currentQuiz.questions.map((q, i) => `
+    <p><strong>Q${i + 1}:</strong> ${q.questionText}<br>
+    ✅ Correct Answer: ${q.correct} - ${q.options[q.correct]}</p>
+  `).join('');
+}
+</script>
+
+</body>
+</html>

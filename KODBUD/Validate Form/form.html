@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Application Form</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1c1c1c, #3b3b3b);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .form-container {
+      background: #222;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 450px;
+      width: 100%;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+      transition: 0.3s;
+    }
+
+    .form-container:hover {
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.2);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #00c6ff;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      background: #333;
+      color: #fff;
+      font-size: 15px;
+    }
+
+    input:focus, textarea:focus {
+      outline: 2px solid #00c6ff;
+    }
+
+    button {
+      width: 100%;
+      background: #00c6ff;
+      color: #000;
+      padding: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #00ffcc;
+      transform: scale(1.02);
+    }
+
+    .error {
+      color: #ff6b6b;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 480px) {
+      .form-container {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Job Application Form</h2>
+    <form id="jobForm" onsubmit="return validateForm()">
+      <label for="name">Full Name:</label>
+      <input type="text" id="name" placeholder="Enter your name">
+      <div id="nameError" class="error"></div>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" placeholder="Enter your email">
+      <div id="emailError" class="error"></div>
+
+      <label for="phone">Phone:</label>
+      <input type="tel" id="phone" placeholder="Enter your phone number">
+      <div id="phoneError" class="error"></div>
+
+      <label for="message">Message:</label>
+      <textarea id="message" rows="4" placeholder="Write your message"></textarea>
+      <div id="messageError" class="error"></div>
+
+      <button type="submit">Submit Application</button>
+    </form>
+  </div>
+
+  <script>
+    function validateForm() {
+      let isValid = true;
+
+      // Clear previous errors
+      document.querySelectorAll('.error').forEach(e => e.textContent = "");
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const message = document.getElementById("message").value.trim();
+
+      // Name validation
+      if (name === "") {
+        document.getElementById("nameError").textContent = "Name is required.";
+        isValid = false;
+      }
+
+      // Email validation
+      const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+      if (email === "") {
+        document.getElementById("emailError").textContent = "Email is required.";
+        isValid = false;
+      } else if (!emailPattern.test(email)) {
+        document.getElementById("emailError").textContent = "Enter a valid email.";
+        isValid = false;
+      }
+
+      // Phone validation
+      const phonePattern = /^[0-9]{10}$/;
+      if (phone === "") {
+        document.getElementById("phoneError").textContent = "Phone number is required.";
+        isValid = false;
+      } else if (!phonePattern.test(phone)) {
+        document.getElementById("phoneError").textContent = "Enter a valid 10-digit phone number.";
+        isValid = false;
+      }
+
+      // Message validation
+      if (message === "") {
+        document.getElementById("messageError").textContent = "Message cannot be empty.";
+        isValid = false;
+      }
+
+      // Success
+      if (isValid) {
+        alert("Form submitted successfully!");
+        document.getElementById("jobForm").reset();
+      }
+
+      return false; // prevent real form submission (for demo)
+    }
+  </script>
+</body>
+</html>

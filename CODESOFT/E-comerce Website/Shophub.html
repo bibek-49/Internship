@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shop Hub - E-Commerce Website</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Inter,Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#0f172a}
+    .container{max-width:1100px;margin:28px auto;padding:18px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{height:44px;width:44px;border-radius:8px;background:linear-gradient(135deg,#6ee7b7,#60a5fa);display:grid;place-items:center;color:white;font-weight:700}
+    .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .search, .category, .sort{padding:8px 12px;border-radius:10px;border:1px solid #e6eef8;background:white}
+    .main{display:grid;grid-template-columns:1fr 350px;gap:18px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+    .card{background:white;border-radius:12px;padding:12px;border:1px solid #eef2ff;box-shadow:0 6px 18px rgba(12,17,37,0.04)}
+    .card img{border-radius:8px;width:100%;height:160px;object-fit:cover}
+    .meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+    .price{font-weight:700}
+    .add{margin-top:10px;padding:8px 10px;border-radius:8px;border:none;background:#2563eb;color:white;cursor:pointer;width:100%}
+    .cart{position:sticky;top:22px;background:white;padding:12px;border-radius:12px;border:1px solid #eef2ff}
+    .cart-items{max-height:300px;overflow-y:auto;margin-bottom:10px}
+    .cart-item{display:flex;justify-content:space-between;margin-bottom:8px;align-items:center}
+    .qty-btn{padding:2px 6px;margin:0 2px;border:none;border-radius:4px;background:#2563eb;color:white;cursor:pointer}
+    .checkout-btn{padding:8px 10px;border-radius:8px;border:none;background:#059669;color:white;width:100%;cursor:pointer}
+    footer{margin-top:22px;text-align:center;color:#475569;font-size:13px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">SH</div>
+        <div>
+          <div style="font-weight:700">Shop Hub</div>
+          <div style="font-size:13px;color:#475569">Your online shopping destination</div>
+        </div>
+      </div>
+      <div class="controls">
+        <input class="search" id="search" placeholder="Search products...">
+        <select class="category" id="categoryFilter"></select>
+        <select class="sort" id="sortSelect">
+          <option value="default">Sort: Default</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+        </select>
+        <button class="btn" id="cartToggleBtn">Cart (0)</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="products">
+        <div class="grid" id="productGrid"></div>
+      </section>
+
+      <aside class="cart" id="cartPanel">
+        <h3>Your Cart</h3>
+        <div class="cart-items" id="cartItems">No items yet.</div>
+        <div><strong>Total: ₹<span id="cartTotal">0</span></strong></div>
+        <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
+      </aside>
+    </main>
+
+    <footer>
+      © 2025 Shop Hub. Built with HTML, CSS & JS — demo only.
+    </footer>
+  </div>
+
+  <script>
+    const products = [
+      {id:1,name:'Wireless Headphones',price:2499,category:'Electronics',img:'headphones.webp'},
+      {id:2,name:'Smart Watch',price:3999,category:'Electronics',img:'rolex-watches.jpg'},
+      {id:3,name:'Digital Camera',price:12499,category:'Electronics',img:'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=500&q=80'},
+      {id:4,name:'Running Shoes',price:1799,category:'Fashion',img:'running shoes.avif'},
+      {id:5,name:'Laptop',price:49999,category:'Electronics',img:'macbook-6_hgfm.jpg'},
+      {id:6,name:'Travel Backpack',price:1299,category:'Accessories',img:'Summit-Extra-Large-Rucksack.avif'},
+      {id:7,name:'Stylish Sunglasses',price:899,category:'Fashion',img:'shopping.webp'},
+      {id:8,name:'Cotton T-Shirt',price:499,category:'Fashion',img:'shopping (2).webp'},
+      {id:9,name:'Luxury Perfume',price:2199,category:'Accessories',img:'shopping (1).webp'},
+      {id:10,name:'Bluetooth Earbuds',price:1599,category:'Electronics',img:'earbuds.webp'},
+      {id:11,name:'Casual Sneakers',price:2299,category:'Fashion',img:'nike air max.webp'},
+      {id:12,name:'Luxury Analog Watch',price:5499,category:'Accessories',img:'analog watch.webp'}
+    ];
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    const productGrid = document.getElementById('productGrid');
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+    const cartToggleBtn = document.getElementById('cartToggleBtn');
+    const cartPanel = document.getElementById('cartPanel');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const sortSelect = document.getElementById('sortSelect');
+
+    const categories = ['All','Electronics','Fashion','Accessories'];
+    categories.forEach(c=>{
+      const option = document.createElement('option');
+      option.value=c.toLowerCase();
+      option.textContent=c;
+      categoryFilter.appendChild(option);
+    });
+
+    function displayProducts(list=products){
+      productGrid.innerHTML = '';
+      list.forEach(p=>{
+        const card = document.createElement('div');
+        card.className='card';
+        card.innerHTML = `<img src='${p.img}' alt='${p.name}'><h3>${p.name}</h3><div class='meta'><span class='price'>₹${p.price}</span></div><button class='add'>Add to Cart</button>`;
+        card.querySelector('.add').addEventListener('click',()=>addToCart(p));
+        productGrid.appendChild(card);
+      });
+    }
+
+    function addToCart(product){
+      const item = cart.find(i=>i.id===product.id);
+      if(item){item.qty++;}else{cart.push({...product,qty:1});}
+      updateCart();
+    }
+
+    function updateCart(){
+      cartItems.innerHTML='';
+      if(cart.length===0){cartItems.innerHTML='No items yet.';}
+      let total=0;
+      cart.forEach(i=>{
+        total+=i.price*i.qty;
+        const div = document.createElement('div');
+        div.className='cart-item';
+        div.innerHTML = `<span>${i.name}</span><div><button class='qty-btn' data-id='${i.id}' data-action='decrease'>-</button>${i.qty}<button class='qty-btn' data-id='${i.id}' data-action='increase'>+</button> ₹${i.price*i.qty}</div>`;
+        cartItems.appendChild(div);
+      });
+      cartTotal.textContent = total;
+      cartToggleBtn.textContent = `Cart (${cart.length})`;
+      localStorage.setItem('cart', JSON.stringify(cart));
+
+      document.querySelectorAll('.qty-btn').forEach(btn=>{
+        btn.addEventListener('click',(e)=>{
+          const id = parseInt(e.target.dataset.id);
+          const action = e.target.dataset.action;
+          const item = cart.find(i=>i.id===id);
+          if(action==='increase'){item.qty++;}
+          else{item.qty--; if(item.qty<=0){cart = cart.filter(c=>c.id!==id);}}
+          updateCart();
+        });
+      });
+    }
+
+    document.getElementById('checkoutBtn').addEventListener('click',()=>{
+      if(cart.length===0){alert('Cart is empty!');return;}
+      const name = prompt('Enter your name:');
+      const address = prompt('Enter your address:');
+      if(name && address){alert(`Thank you ${name}! Your order of ₹${cart.reduce((sum,i)=>sum+i.price*i.qty,0)} has been placed.`);cart=[];updateCart();}
+    });
+
+    cartToggleBtn.addEventListener('click',()=>{
+      cartPanel.style.display = cartPanel.style.display==='none'?'block':'none';
+    });
+
+    document.getElementById('search').addEventListener('input',(e)=>filterAndSort());
+    categoryFilter.addEventListener('change',()=>filterAndSort());
+    sortSelect.addEventListener('change',()=>filterAndSort());
+
+    function filterAndSort(){
+      let filtered = products.filter(p=>p.name.toLowerCase().includes(document.getElementById('search').value.toLowerCase()));
+      const cat = categoryFilter.value;
+      if(cat !== 'all') filtered = filtered.filter(p=>p.category.toLowerCase()===cat);
+      const sort = sortSelect.value;
+      if(sort==='price-asc') filtered.sort((a,b)=>a.price-b.price);
+      if(sort==='price-desc') filtered.sort((a,b)=>b.price-a.price);
+      displayProducts(filtered);
+    }
+
+    displayProducts();
+    updateCart();
+    cartPanel.style.display='block';
+  </script>
+</body>
+</html>

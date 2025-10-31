@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel With Us</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background-color: #f9f9f9;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    /* ---------- Header ---------- */
+    header {
+      background-color: #0077b6;
+      color: white;
+      padding: 20px 10%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: 28px;
+    }
+
+    nav ul {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: #ffd60a;
+    }
+
+    /* ---------- Hero Section ---------- */
+    .hero {
+      background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') no-repeat center/cover;
+      height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .hero h2 {
+      font-size: 50px;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+    }
+
+    .hero p {
+      font-size: 20px;
+      max-width: 600px;
+    }
+
+    .hero button {
+      margin-top: 25px;
+      padding: 12px 25px;
+      border: none;
+      background-color: #ffd60a;
+      color: #333;
+      font-weight: 600;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .hero button:hover {
+      background-color: #ffc300;
+      transform: scale(1.05);
+    }
+
+    /* ---------- Features ---------- */
+    .features {
+      padding: 60px 10%;
+      text-align: center;
+    }
+
+    .features h2 {
+      font-size: 32px;
+      color: #0077b6;
+      margin-bottom: 40px;
+    }
+
+    .feature-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .feature {
+      background-color: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      padding: 25px;
+      width: 280px;
+      transition: 0.3s;
+    }
+
+    .feature:hover {
+      transform: translateY(-10px);
+    }
+
+    .feature img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    /* ---------- About ---------- */
+    .about {
+      background-color: #e9f5ff;
+      padding: 60px 10%;
+      text-align: center;
+    }
+
+    .about h2 {
+      color: #0077b6;
+      margin-bottom: 20px;
+    }
+
+    .about p {
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.7;
+      font-size: 18px;
+    }
+
+    /* ---------- Footer ---------- */
+    footer {
+      background-color: #023e8a;
+      color: white;
+      text-align: center;
+      padding: 20px 10%;
+    }
+
+    footer p {
+      font-size: 15px;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 768px) {
+      .hero h2 {
+        font-size: 36px;
+      }
+
+      .feature-container {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <h1>Travel With Us</h1>
+    <nav>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#destinations">Destinations</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <h2>Explore The World With Us</h2>
+    <p>Discover breathtaking destinations, unique experiences, and unforgettable memories — all in one journey.</p>
+    <button>Plan Your Trip</button>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" id="destinations">
+    <h2>Top Destinations</h2>
+    <div class="feature-container">
+      <div class="feature">
+        <img src="https://images.unsplash.com/photo-1505761671935-60b3a7427bad" alt="Beach">
+        <h3>Maldives</h3>
+        <p>Enjoy crystal-clear waters and luxurious resorts in a tropical paradise.</p>
+      </div>
+      <div class="feature">
+        <img src="switzerland.jpg" alt="Mountains">
+        <h3>Switzerland</h3>
+        <p>Experience stunning mountain views and charming alpine villages.</p>
+      </div>
+      <div class="feature">
+        <img src="image.png" alt="City">
+        <h3>Paris</h3>
+        <p>Fall in love with the City of Lights — art, culture, and romance await.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about" id="about">
+    <h2>About Us</h2>
+    <p>We are passionate travel enthusiasts helping explorers discover the world’s most beautiful destinations. From mountains to beaches, our mission is to make your travel dreams come true with ease and joy.</p>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contact">
+    <p>📧 travelwithus@example.com | 📞 +91 9876543210</p>
+    <p>© 2025 Travel With Us. All Rights Reserved.</p>
+  </footer>
+
+</body>
+</html>
