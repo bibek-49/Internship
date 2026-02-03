@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💖 Happy Birthday 💖</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{height:100vh;overflow:hidden;font-family:'Poppins',sans-serif;background:#000;}
+.story{height:100vh;width:100%;position:relative;}
+
+.intro{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;background:linear-gradient(160deg,#ff9a9e,#fad0c4);z-index:5;}
+.envelope{background:#fff;border-radius:24px;padding:30px;width:320px;text-align:center;box-shadow:0 25px 50px rgba(0,0,0,0.4);animation:pop 1s ease;}
+@keyframes pop{from{transform:scale(0.6);opacity:0;}to{transform:scale(1);opacity:1;}}
+.envelope h1{text-align:center;color:#ff4d6d;margin-bottom:14px;text-shadow:0 0 8px rgba(255,77,109,.6);} 
+.btns{display:flex;gap:16px;justify-content:center;margin-top:20px;}
+.btn{padding:10px 22px;border-radius:30px;border:none;font-size:16px;cursor:pointer;background:#ff4d6d;color:#fff;}
+.btn.no{background:#ccc;color:#333;}
+
+.slide{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;padding:30px;opacity:0;transition:0.7s;}
+.slide.active{opacity:1;}
+.letter{background:rgba(255,255,255,0.97);border-radius:24px;padding:32px 26px;max-width:380px;box-shadow:0 25px 50px rgba(0,0,0,0.4);} 
+h1{text-align:center;color:#ff4d6d;margin-bottom:14px;} 
+p{text-align:center;line-height:1.8;color:#444;} 
+.gif{width:170px;height:170px;margin:18px auto;display:block;border-radius:18px;object-fit:cover;} 
+.typewriter{white-space:pre-line;border-right:2px solid #ff4d6d;animation:blink .8s infinite;} 
+@keyframes blink{50%{border-color:transparent;}}
+
+.s1{background:linear-gradient(160deg,#ff9a9e,#fad0c4);} 
+.s2{background:linear-gradient(160deg,#a18cd1,#fbc2eb);} 
+.s3{background:linear-gradient(160deg,#ffecd2,#fcb69f);} 
+.s4{background:linear-gradient(160deg,#cfd9df,#e2ebf0);} 
+.s5{background:linear-gradient(160deg,#fccb90,#d57eeb);} 
+
+canvas#fireworks{position:fixed;inset:0;pointer-events:none;z-index:1;} 
+
+.balloon{position:fixed;bottom:-80px;font-size:26px;animation:balloonUp linear forwards;opacity:.9;} 
+@keyframes balloonUp{to{transform:translateY(-120vh);opacity:0;}} 
+</style>
+</head>
+<body>
+
+<canvas id="fireworks"></canvas>
+<div class="story" id="story">
+
+<div style="position:fixed;right:12px;bottom:12px;z-index:10;background:#fff;padding:8px;border-radius:12px;box-shadow:0 10px 20px rgba(0,0,0,.3)">
+  <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=LOADING" alt="QR" id="qr">
+  <p style="font-size:12px;text-align:center;color:#444">Scan Me 💖</p>
+</div>
+
+<div class="intro" id="intro">
+  <div class="envelope">
+    <h1>💌 A Letter For You</h1>
+    <p>Isse kholna hai?</p>
+    <div class="btns">
+      <button class="btn" id="yesBtn">Yes</button>
+      <button class="btn no" id="noBtn">No</button>
+    </div>
+  </div>
+</div>
+
+<div class="slide active s1"><div class="letter"><h1>Happy Birthday 💖</h1><img class="gif" src="https://media.giphy.com/media/l4FGpP4lxGGgK5CBW/giphy.gif"><p class="typewriter" data-text="Aaj jab yeh letter khul raha hai,\nwoh sirf words nahi feelings hain."></p></div></div>
+<div class="slide s2"><div class="letter"><img class="gif" src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif"><p class="typewriter" data-text="Tumhari simplicity aur cuteness hi kaafi hai kisi ka din better banane ke liye."></p></div></div>
+<div class="slide s3"><div class="letter"><img class="gif" src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif"><p class="typewriter" data-text="Tumhari presence hi special feel karwati hai."></p></div></div>
+<div class="slide s4"><div class="letter"><img class="gif" src="https://media.giphy.com/media/26FPJGjhefSJuaRhu/giphy.gif"><p class="typewriter" data-text="Aaj ka din sirf tumhara hai 🎂"></p></div></div>
+<div class="slide s5"><div class="letter"><img class="gif" src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif"><p class="typewriter" data-text="Happy Birthday Pasandita Aurat 💖"></p></div></div>
+
+</div>
+
+<script>
+// AUTO PLAY DISABLED — MANUAL TAP ONLY
+let autoTimer = null;
+function startAutoPlay(){}
+function stopAutoPlay(){} 
+
+const slides=document.querySelectorAll('.slide');
+// Fill QR with current page URL
+const qrImg=document.getElementById('qr');
+if(qrImg){qrImg.src='https://api.qrserver.com/v1/create-qr-code/?size=120x120&data='+encodeURIComponent(location.href);}
+let index=0;
+
+function typeText(el){if(!el)return;const t=el.dataset.text||'';el.textContent='';let i=0;(function ty(){if(i<t.length){el.textContent+=t[i++];setTimeout(ty,30);}})();}
+
+function openStory(){
+  stopAutoPlay();
+  document.getElementById('intro').style.display='none';
+  index = 0;
+  slides.forEach(s=>s.classList.remove('active'));
+  slides[0].classList.add('active');
+  typeText(slides[0].querySelector('.typewriter'));
+  startFireworks();
+  setTimeout(stopFireworks,3500);
+}
+
+document.getElementById('yesBtn').onclick=openStory;
+document.getElementById('noBtn').onclick=openStory;
+
+document.getElementById('story').addEventListener('click',()=>{slides[index].classList.remove('active');index=(index+1)%slides.length;slides[index].classList.add('active');typeText(slides[index].querySelector('.typewriter'));if(index===slides.length-1){startFireworks();setTimeout(stopFireworks,4000);}});
+
+setInterval(()=>{const b=document.createElement('div');b.className='balloon';b.textContent=['🎈','💖','💕','🌸'][Math.floor(Math.random()*4)];b.style.left=Math.random()*100+'vw';b.style.animationDuration=6+Math.random()*6+'s';document.body.appendChild(b);setTimeout(()=>b.remove(),12000);},600);
+
+const canvas=document.getElementById('fireworks');const ctx=canvas.getContext('2d');let fwActive=false;let particles=[];
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight;}resize();addEventListener('resize',resize);
+function startFireworks(){fwActive=true;}function stopFireworks(){fwActive=false;}
+function boom(){const x=Math.random()*canvas.width;const y=Math.random()*canvas.height/2;for(let i=0;i<40;i++)particles.push({x,y,dx:(Math.random()-.5)*4,dy:(Math.random()-.5)*4,life:60});}
+function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);if(fwActive&&Math.random()<0.05)boom();particles.forEach((p,i)=>{p.x+=p.dx;p.y+=p.dy;p.life--;ctx.fillStyle='rgba(255,100,150,.8)';ctx.fillRect(p.x,p.y,3,3);if(p.life<=0)particles.splice(i,1);});requestAnimationFrame(animate);}animate();
+</script>
+</body>
+</html>
